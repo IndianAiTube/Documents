@@ -7,7 +7,7 @@
     <style>
         :root {
             --primary-color: #2c3e50;
-            --accent-color: #3498db;
+            --accent-color: #27ae60; /* Changed to Green for Drive */
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
         }
@@ -58,7 +58,7 @@
         }
 
         #search-input:focus {
-            box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 0 8px rgba(39, 174, 96, 0.3);
             border-color: var(--accent-color);
         }
 
@@ -85,8 +85,8 @@
         }
 
         .book-icon {
-            background-color: #eecda3;
-            background-image: linear-gradient(315deg, #eecda3 0%, #ef629f 74%);
+            background-color: #11998e;
+            background-image: linear-gradient(315deg, #11998e 0%, #38ef7d 74%);
             height: 120px;
             display: flex;
             align-items: center;
@@ -129,7 +129,13 @@
         }
 
         .read-btn:hover {
-            background-color: #2980b9;
+            background-color: #219150;
+        }
+        
+        .read-btn.disabled {
+            background-color: #95a5a6;
+            pointer-events: none;
+            cursor: default;
         }
 
         /* Responsive adjustments */
@@ -156,42 +162,67 @@
 </div>
 
 <script>
-    // List of PDF files exactly as they appear in your folder
-    // Note: Ensure these files are inside a "pdfs" folder in your repo
+    // Configuration: Add your Drive links here
     const books = [
-        { filename: "life_is_a_computer_simulation.pdf", category: "Science" },
-        { filename: "autonomous_desktop_intelligence.pdf", category: "Tech" },
-        { filename: "Plant vs. Protein_ The Eternal.pdf", category: "Health" },
-        { filename: "quantum_mechanics.pdf", category: "Physics" },
-        { filename: "Plant Power vs. Meat Muscle_ T.pdf", category: "Health" },
-        { filename: "Omelette vs. Boiled Egg_ The U.pdf", category: "Food" },
-        { filename: "Life Race Analysis (3).pdf", category: "Self-Help" },
-        { filename: "Plant Power vs. Protein Punch_.pdf", category: "Health" },
-        { filename: "Life Race Analysis.pdf", category: "Self-Help" },
-        { filename: "seven_lessons_from_the_bhagavad_gita.pdf", category: "Philosophy" }
+        { 
+            title: "Life Race Analysis", 
+            category: "Self-Help", 
+            link: "https://drive.google.com/open?id=1MjwBndJmXeFG1wFHbvv0JAWY70EztCW8" 
+        },
+        { 
+            title: "Life Race Analysis (v3)", 
+            category: "Self-Help", 
+            link: "https://drive.google.com/open?id=1hrRP2UIQTSOblpvqCsIAXsu_qrnfp6m6" 
+        },
+        { 
+            title: "Life Is A Computer Simulation", 
+            category: "Science", 
+            link: "#" // PASTE LINK HERE
+        },
+        { 
+            title: "Autonomous Desktop Intelligence", 
+            category: "Tech", 
+            link: "#" // PASTE LINK HERE
+        },
+        { 
+            title: "Plant vs. Protein: The Eternal", 
+            category: "Health", 
+            link: "#" // PASTE LINK HERE
+        },
+        { 
+            title: "Quantum Mechanics", 
+            category: "Physics", 
+            link: "#" // PASTE LINK HERE
+        },
+        { 
+            title: "Plant Power vs. Meat Muscle", 
+            category: "Health", 
+            link: "#" // PASTE LINK HERE
+        },
+        { 
+            title: "Omelette vs. Boiled Egg", 
+            category: "Food", 
+            link: "#" // PASTE LINK HERE
+        },
+        { 
+            title: "Seven Lessons from Bhagavad Gita", 
+            category: "Philosophy", 
+            link: "#" // PASTE LINK HERE
+        }
     ];
 
     const grid = document.getElementById('library-grid');
     const searchInput = document.getElementById('search-input');
 
-    // Function to format filename into a readable title
-    function formatTitle(filename) {
-        return filename
-            .replace('.pdf', '')            // Remove extension
-            .replace(/_/g, ' ')             // Replace underscores with spaces
-            .replace(/\(3\)/g, '')          // Remove version numbers like (3)
-            .trim();
-    }
-
     function renderBooks(filterText = '') {
         grid.innerHTML = '';
         
         const filteredBooks = books.filter(book => 
-            formatTitle(book.filename).toLowerCase().includes(filterText.toLowerCase())
+            book.title.toLowerCase().includes(filterText.toLowerCase())
         );
 
         if (filteredBooks.length === 0) {
-            grid.innerHTML = '<p style="text-align:center; width:100%; color:#777;">No books found matching your search.</p>';
+            grid.innerHTML = '<p style="text-align:center; width:100%; color:#777;">No books found.</p>';
             return;
         }
 
@@ -199,16 +230,17 @@
             const card = document.createElement('div');
             card.className = 'book-card';
             
-            // Path assumes you put files in a folder named 'pdfs'
-            const filePath = `pdfs/${book.filename}`;
-            const title = formatTitle(book.filename);
+            // Check if link is missing
+            const isMissingLink = book.link === "#" || book.link === "";
+            const btnText = isMissingLink ? "Link Missing" : "Read Now";
+            const btnClass = isMissingLink ? "read-btn disabled" : "read-btn";
 
             card.innerHTML = `
-                <div class="book-icon">📖</div>
+                <div class="book-icon">📄</div>
                 <div class="book-info">
-                    <div class="book-title">${title}</div>
-                    <div class="book-meta">Format: PDF • ${book.category}</div>
-                    <a href="${filePath}" class="read-btn" target="_blank">Read Now</a>
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-meta">Drive PDF • ${book.category}</div>
+                    <a href="${book.link}" class="${btnClass}" target="_blank">${btnText}</a>
                 </div>
             `;
             grid.appendChild(card);
