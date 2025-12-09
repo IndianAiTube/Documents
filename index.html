@@ -3,308 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documents Library</title>
+    <title>My Library App</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
 
         header {
-            background: white;
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        h1 {
-            color: #333;
-            font-size: 28px;
-            margin-bottom: 15px;
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
         }
 
-        .search-box {
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        #search-input {
             width: 100%;
             max-width: 500px;
             padding: 12px 20px;
-            border: 2px solid #ddd;
+            border: 1px solid #ddd;
             border-radius: 25px;
-            font-size: 16px;
+            font-size: 1rem;
             outline: none;
-            transition: border-color 0.3s;
+            transition: box-shadow 0.3s ease;
         }
 
-        .search-box:focus {
-            border-color: #667eea;
+        #search-input:focus {
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+            border-color: var(--accent-color);
         }
 
-        .content-wrapper {
+        /* Grid Layout */
+        .library-grid {
             display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 20px;
-            height: calc(100vh - 200px);
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
         }
 
-        .sidebar {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            overflow-y: auto;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .pdf-item {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: #f8f9fa;
-            border: 2px solid transparent;
-        }
-
-        .pdf-item:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .pdf-item.active {
-            background: #667eea;
-            color: white;
-            border-color: #5568d3;
-        }
-
-        .pdf-title {
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .viewer-container {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        .book-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        .viewer-header {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #eee;
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
 
-        .viewer-title {
-            font-size: 20px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .pdf-viewer {
-            flex: 1;
-            border: none;
-            border-radius: 8px;
-            background: #f5f5f5;
-        }
-
-        .no-selection {
+        .book-icon {
+            background-color: #eecda3;
+            background-image: linear-gradient(315deg, #eecda3 0%, #ef629f 74%);
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            color: #999;
-            font-size: 18px;
+            font-size: 3rem;
+            color: white;
         }
 
-        .category-header {
-            font-size: 12px;
+        .book-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-title {
             font-weight: 600;
-            color: #667eea;
-            text-transform: uppercase;
-            margin: 15px 0 10px 0;
-            padding-bottom: 5px;
-            border-bottom: 2px solid #667eea;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
         }
 
-        .category-header:first-child {
-            margin-top: 0;
+        .book-meta {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 1.5rem;
         }
 
-        @media (max-width: 768px) {
-            .content-wrapper {
-                grid-template-columns: 1fr;
-                grid-template-rows: 250px 1fr;
-                height: calc(100vh - 180px);
-            }
-
-            .sidebar {
-                overflow-y: auto;
-            }
-        }
-
-        .no-results {
+        .read-btn {
+            margin-top: auto;
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            padding: 10px 0;
             text-align: center;
-            color: #999;
-            padding: 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .read-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .library-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📚 Documents Library</h1>
-            <input type="text" class="search-box" id="searchBox" placeholder="Search documents...">
-        </header>
 
-        <div class="content-wrapper">
-            <div class="sidebar" id="sidebar">
-                <!-- PDF list will be populated here -->
-            </div>
+<header>
+    <h1>📚 Digital Library</h1>
+</header>
 
-            <div class="viewer-container">
-                <div class="viewer-header" id="viewerHeader" style="display: none;">
-                    <div class="viewer-title" id="viewerTitle"></div>
-                </div>
-                <div id="viewerContent" class="no-selection">
-                    Select a document from the sidebar to view
-                </div>
-            </div>
-        </div>
+<div class="container">
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search for a book...">
     </div>
 
-    <script>
-        // INSTRUCTIONS TO ADD YOUR PDFs:
-        // 1. Go to your Google Drive folder
-        // 2. For each PDF file:
-        //    - Right click → Share → Change to "Anyone with the link"
-        //    - Copy the share link (looks like: https://drive.google.com/file/d/FILE_ID/view)
-        //    - Extract the FILE_ID from the link
-        //    - Add an entry below with title and the FILE_ID
+    <div class="library-grid" id="library-grid">
+        </div>
+</div>
+
+<script>
+    // List of PDF files exactly as they appear in your folder
+    // Note: Ensure these files are inside a "pdfs" folder in your repo
+    const books = [
+        { filename: "life_is_a_computer_simulation.pdf", category: "Science" },
+        { filename: "autonomous_desktop_intelligence.pdf", category: "Tech" },
+        { filename: "Plant vs. Protein_ The Eternal.pdf", category: "Health" },
+        { filename: "quantum_mechanics.pdf", category: "Physics" },
+        { filename: "Plant Power vs. Meat Muscle_ T.pdf", category: "Health" },
+        { filename: "Omelette vs. Boiled Egg_ The U.pdf", category: "Food" },
+        { filename: "Life Race Analysis (3).pdf", category: "Self-Help" },
+        { filename: "Plant Power vs. Protein Punch_.pdf", category: "Health" },
+        { filename: "Life Race Analysis.pdf", category: "Self-Help" },
+        { filename: "seven_lessons_from_the_bhagavad_gita.pdf", category: "Philosophy" }
+    ];
+
+    const grid = document.getElementById('library-grid');
+    const searchInput = document.getElementById('search-input');
+
+    // Function to format filename into a readable title
+    function formatTitle(filename) {
+        return filename
+            .replace('.pdf', '')            // Remove extension
+            .replace(/_/g, ' ')             // Replace underscores with spaces
+            .replace(/\(3\)/g, '')          // Remove version numbers like (3)
+            .trim();
+    }
+
+    function renderBooks(filterText = '') {
+        grid.innerHTML = '';
         
-        const pdfDocuments = [
-            // Example format - Replace with your actual documents:
-            {
-                category: "Research Papers",
-                files: [
-                    {
-                        title: "Example Paper 1",
-                        fileId: "YOUR_FILE_ID_HERE"
-                    },
-                    {
-                        title: "Example Paper 2",
-                        fileId: "YOUR_FILE_ID_HERE"
-                    }
-                ]
-            },
-            {
-                category: "Tutorials",
-                files: [
-                    {
-                        title: "Tutorial Document 1",
-                        fileId: "YOUR_FILE_ID_HERE"
-                    }
-                ]
-            },
-            // Add more categories and files as needed
-        ];
+        const filteredBooks = books.filter(book => 
+            formatTitle(book.filename).toLowerCase().includes(filterText.toLowerCase())
+        );
 
-        let currentDoc = null;
-        let allFiles = [];
-
-        // Flatten categories into single array for search
-        pdfDocuments.forEach(category => {
-            category.files.forEach(file => {
-                allFiles.push({
-                    ...file,
-                    category: category.category
-                });
-            });
-        });
-
-        function renderSidebar(filter = '') {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.innerHTML = '';
-
-            const filteredDocs = filter 
-                ? pdfDocuments.map(cat => ({
-                    ...cat,
-                    files: cat.files.filter(f => 
-                        f.title.toLowerCase().includes(filter.toLowerCase())
-                    )
-                  })).filter(cat => cat.files.length > 0)
-                : pdfDocuments;
-
-            if (filteredDocs.length === 0 || filteredDocs.every(cat => cat.files.length === 0)) {
-                sidebar.innerHTML = '<div class="no-results">No documents found</div>';
-                return;
-            }
-
-            filteredDocs.forEach(category => {
-                if (category.files.length > 0) {
-                    const categoryHeader = document.createElement('div');
-                    categoryHeader.className = 'category-header';
-                    categoryHeader.textContent = category.category;
-                    sidebar.appendChild(categoryHeader);
-
-                    category.files.forEach(file => {
-                        const item = document.createElement('div');
-                        item.className = 'pdf-item';
-                        if (currentDoc && currentDoc.fileId === file.fileId) {
-                            item.classList.add('active');
-                        }
-                        
-                        item.innerHTML = `<div class="pdf-title">📄 ${file.title}</div>`;
-                        item.onclick = () => loadPDF(file);
-                        sidebar.appendChild(item);
-                    });
-                }
-            });
+        if (filteredBooks.length === 0) {
+            grid.innerHTML = '<p style="text-align:center; width:100%; color:#777;">No books found matching your search.</p>';
+            return;
         }
 
-        function loadPDF(doc) {
-            currentDoc = doc;
-            const viewerContent = document.getElementById('viewerContent');
-            const viewerHeader = document.getElementById('viewerHeader');
-            const viewerTitle = document.getElementById('viewerTitle');
-
-            viewerHeader.style.display = 'block';
-            viewerTitle.textContent = doc.title;
-
-            // Create Google Drive preview URL
-            const previewUrl = `https://drive.google.com/file/d/${doc.fileId}/preview`;
+        filteredBooks.forEach(book => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
             
-            viewerContent.innerHTML = `<iframe class="pdf-viewer" src="${previewUrl}" allow="autoplay"></iframe>`;
-            
-            // Update sidebar to show active item
-            renderSidebar(document.getElementById('searchBox').value);
-        }
+            // Path assumes you put files in a folder named 'pdfs'
+            const filePath = `pdfs/${book.filename}`;
+            const title = formatTitle(book.filename);
 
-        // Search functionality
-        document.getElementById('searchBox').addEventListener('input', (e) => {
-            renderSidebar(e.target.value);
+            card.innerHTML = `
+                <div class="book-icon">📖</div>
+                <div class="book-info">
+                    <div class="book-title">${title}</div>
+                    <div class="book-meta">Format: PDF • ${book.category}</div>
+                    <a href="${filePath}" class="read-btn" target="_blank">Read Now</a>
+                </div>
+            `;
+            grid.appendChild(card);
         });
+    }
 
-        // Initial render
-        renderSidebar();
+    // Initial Render
+    renderBooks();
 
-        // Auto-select first document if available
-        if (allFiles.length > 0) {
-            loadPDF(allFiles[0]);
-        }
-    </script>
+    // Search Listener
+    searchInput.addEventListener('input', (e) => {
+        renderBooks(e.target.value);
+    });
+</script>
+
 </body>
 </html>
